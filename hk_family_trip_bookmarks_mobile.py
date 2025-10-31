@@ -7,7 +7,7 @@ st.set_page_config(page_title="家族旅行ブックマーク", layout="wide")
 # Streamlitタイトル（標準サイズ・シンプル）
 st.subheader("家族旅行ブックマーク")
 
-st.write("以下のHTMLは自動で高さを調整して全体がスクロール可能です。")
+#st.write("以下のHTMLは自動で高さを調整して全体がスクロール可能です。")
 
 # HTMLファイルを読み込み
 with open("hk_family_trip_bookmarks_mobile.html", "r", encoding="utf-8") as f:
