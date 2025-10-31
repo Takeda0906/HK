@@ -2,7 +2,7 @@ import streamlit as st
 from pathlib import Path
 
 # タイトル
-st.title("香港 家族旅行ブックマーク")
+#st.title("香港 家族旅行ブックマーク")
 
 # HTMLファイルパス
 html_file = Path("hk_family_trip_bookmarks_mobile.html")
