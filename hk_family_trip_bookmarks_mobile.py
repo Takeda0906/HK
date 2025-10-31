@@ -2,14 +2,17 @@ import streamlit as st
 from streamlit.components.v1 import html as st_html
 
 # ページ設定
-st.set_page_config(page_title="家族旅行ブックマーク", layout="wide")
+st.set_page_config(
+    page_title="家族旅行ブックマーク",
+    layout="wide"
+)
 
-# HTMLファイルを読み込み
+# HTMLファイル読み込み
 with open("hk_family_trip_bookmarks_mobile.html", "r", encoding="utf-8") as f:
     html_code = f.read()
 
-# --- Blob URLでiframe読み込み（文字化け防止＆スマホリンク対応） ---
-auto_resize_wrapper = f"""
+# Streamlitに埋め込み（スマホ対応・全画面・スクロール対応）
+responsive_html = f"""
 <!DOCTYPE html>
 <html>
 <head>
@@ -20,52 +23,39 @@ auto_resize_wrapper = f"""
     margin: 0;
     padding: 0;
     height: 100%;
-    overflow: auto;
+    overflow: hidden; /* スクロールはStreamlit側に任せる */
   }}
-  iframe {{
-    border: none;
+  #content-wrapper {{
     width: 100%;
     min-height: 100vh;
+    box-sizing: border-box;
   }}
 </style>
 </head>
 <body>
+<div id="content-wrapper">
+{html_code}
+</div>
+
 <script>
-    // HTML文字列をUTF-8でBlob化
-    const htmlString = `{html_code.replace('`', '\\`')}`;
-    const blob = new Blob([htmlString], {{ type: "text/html;charset=utf-8" }});
-    const blobUrl = URL.createObjectURL(blob);
+function adjustHeight() {{
+    const wrapper = document.getElementById('content-wrapper');
+    const newHeight = wrapper.scrollHeight;
+    wrapper.style.minHeight = newHeight + 'px';
+}}
 
-    // iframe生成
-    const iframe = document.createElement("iframe");
-    iframe.src = blobUrl;
-    iframe.sandbox = "allow-same-origin allow-scripts allow-popups allow-forms";
-    iframe.style.width = "100%";
-    iframe.style.minHeight = "100vh";
-    iframe.style.border = "none";
-    document.body.appendChild(iframe);
-
-    // 高さ自動調整
-    function resizeIframe() {{
-        try {{
-            const doc = iframe.contentDocument || iframe.contentWindow.document;
-            const newHeight = doc.documentElement.scrollHeight || doc.body.scrollHeight;
-            iframe.style.height = newHeight + "px";
-        }} catch (e) {{
-            console.log("resize error:", e);
-        }}
-    }}
-
-    iframe.addEventListener("load", () => {{
-        resizeIframe();
-        setTimeout(resizeIframe, 1000);
-        setTimeout(resizeIframe, 3000);
-    }});
-    window.addEventListener("resize", resizeIframe);
+// 読み込み時・画像読み込み後・リサイズ時に高さ調整
+window.addEventListener('load', adjustHeight);
+window.addEventListener('resize', adjustHeight);
+const images = document.images;
+for (let img of images) {{
+    img.addEventListener('load', adjustHeight);
+}}
 </script>
 </body>
 </html>
 """
 
 # Streamlitに埋め込み
-st_html(auto_resize_wrapper, height=2000, scrolling=True)
+# heightは大きめにしてスクロール可能に
+st_html(responsive_html, height=2000, scrolling=True)
