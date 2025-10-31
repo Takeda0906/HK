@@ -1,11 +1,9 @@
-# app.py
 import streamlit as st
-import streamlit.components.v1 as components
 from pathlib import Path
 
 #st.set_page_config(page_title="香港 家族旅行", layout="wide")
 
-# Streamlit ヘッダ・フッタ非表示
+# ヘッダ・フッタ非表示
 st.markdown(
     """
     <style>
@@ -16,16 +14,14 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# HTMLファイルのパス
+# HTMLファイルを読み込む
 html_file = Path(__file__).parent / "hk_family_trip_bookmarks_mobile.html"
-
-# HTMLを読み込み
 with open(html_file, "r", encoding="utf-8") as f:
     html_content = f.read()
 
-# components.htmlで直接埋め込む
-components.html(
-    html_content,
-    height=1200,  # ページ全体の高さに調整してください
-    scrolling=True
-)
+# スマホ対応用にリンクをすべて target="_blank" に置換
+import re
+html_content_fixed = re.sub(r'<a ', '<a target="_blank" ', html_content)
+
+# HTMLをそのまま表示
+st.markdown(html_content_fixed, unsafe_allow_html=True)
