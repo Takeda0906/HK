@@ -1,15 +1,18 @@
 import streamlit as st
 from streamlit.components.v1 import html as st_html
+import base64
 
-# ページ設定
 st.set_page_config(page_title="家族旅行ブックマーク", layout="wide")
 
-# HTMLファイルを読み込み
+# HTMLファイル読み込み
 with open("hk_family_trip_bookmarks_mobile.html", "r", encoding="utf-8") as f:
     html_code = f.read()
 
-# --- 高さ自動調整 + スクロール + リンク遷移対応 ---
-auto_resize_wrapper = f"""
+# Base64に変換
+html_base64 = base64.b64encode(html_code.encode("utf-8")).decode()
+
+# Blob URLを生成してiframeで読み込む
+html_wrapper = f"""
 <!DOCTYPE html>
 <html>
 <head>
@@ -29,33 +32,41 @@ auto_resize_wrapper = f"""
 </style>
 </head>
 <body>
-  <iframe 
-    id="embedded"
-    sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
-    srcdoc="{html_code.replace('"', '&quot;')}">
-  </iframe>
-
   <script>
-    const iframe = document.getElementById('embedded');
+    // Base64データをBlobに変換し、一時URLを作成
+    const blob = new Blob([atob("{html_base64}")], {{ type: "text/html" }});
+    const blobUrl = URL.createObjectURL(blob);
+
+    // iframe生成
+    const iframe = document.createElement("iframe");
+    iframe.src = blobUrl;
+    iframe.sandbox = "allow-same-origin allow-scripts allow-popups allow-forms";
+    iframe.style.width = "100%";
+    iframe.style.border = "none";
+    iframe.style.minHeight = "100vh";
+    document.body.appendChild(iframe);
+
+    // 自動高さ調整
     function resizeIframe() {{
       try {{
         const doc = iframe.contentDocument || iframe.contentWindow.document;
         const newHeight = doc.documentElement.scrollHeight || doc.body.scrollHeight;
-        iframe.style.height = newHeight + 'px';
+        iframe.style.height = newHeight + "px";
       }} catch (e) {{
-        console.log('resize error:', e);
+        console.log("resize error:", e);
       }}
     }}
-    iframe.addEventListener('load', () => {{
+
+    iframe.addEventListener("load", () => {{
       resizeIframe();
       setTimeout(resizeIframe, 1000);
       setTimeout(resizeIframe, 3000);
     }});
-    window.addEventListener('resize', resizeIframe);
+    window.addEventListener("resize", resizeIframe);
   </script>
 </body>
 </html>
 """
 
-# Streamlitに埋め込み
-st_html(auto_resize_wrapper, height=2000, scrolling=True)
+# Streamlitで埋め込み
+st_html(html_wrapper, height=2000, scrolling=True)
