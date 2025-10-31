@@ -1,5 +1,3 @@
-以下はフルサンプルです。
-
 import streamlit as st
 from pathlib import Path
 
