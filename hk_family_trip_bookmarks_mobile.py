@@ -1,34 +1,25 @@
 import streamlit as st
-from pathlib import Path
 
-# ページ設定
-st.set_page_config(page_title="家族旅行ブックマーク", layout="wide")
+# HTMLファイルの読み込み
+with open("hk_family_trip_bookmarks_mobile.html", "r", encoding="utf-8") as f:
+    html_content = f.read()
 
-# HTML読み込み（UTF-8）
-html_file = Path("hk_family_trip_bookmarks_mobile.html")
-with html_file.open("r", encoding="utf-8") as f:
-    html_code = f.read()
+# HTMLを表示
+st.markdown(
+    html_content,
+    unsafe_allow_html=True  # HTMLレンダリングを許可
+)
 
-# Streamlit に直接埋め込み（iframeなし）
-# スクロールと高さ自動調整対応
-st.markdown(f"""
-<div id="bookmark-wrapper" style="width:100%;">
-{html_code}
-</div>
-
-<script>
-// 高さ自動調整（画像ロードやリサイズ対応）
-function adjustHeight() {{
-    const wrapper = document.getElementById('bookmark-wrapper');
-    wrapper.style.minHeight = wrapper.scrollHeight + 'px';
-}}
-
-window.addEventListener('load', adjustHeight);
-window.addEventListener('resize', adjustHeight);
-
-const images = document.images;
-for (let img of images) {{
-    img.addEventListener('load', adjustHeight);
-}}
-</script>
-""", unsafe_allow_html=True)
+# ページ全体をスマホ表示に最適化
+st.markdown(
+    """
+    <style>
+    /* 全画面幅にする */
+    .reportview-container .main {
+        padding: 0;
+        margin: 0;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
