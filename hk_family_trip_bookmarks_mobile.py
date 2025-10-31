@@ -1,38 +1,31 @@
 import streamlit as st
-import streamlit.components.v1 as components
+import os
+import webbrowser
 
 st.set_page_config(page_title="香港家族旅行ブックマーク", layout="wide")
 
-# Streamlit のヘッダー・フッターを非表示に
-hide_streamlit_style = """
+# Streamlit ヘッダー・フッターを非表示
+st.markdown("""
 <style>
-/* ヘッダー非表示 */
 header {display: none;}
-/* フッター非表示 */
 footer {display: none;}
-/* ページ余白をなくす */
 .css-18e3th9 {padding: 0px;}
 </style>
-"""
-st.markdown(hide_streamlit_style, unsafe_allow_html=True)
+""", unsafe_allow_html=True)
 
-# HTMLファイル読み込み
-with open("hk_family_trip_bookmarks_mobile.html", "r", encoding="utf-8") as f:
-    html_content = f.read()
+st.title("香港家族旅行ブックマーク")
 
-# JavaScriptでリンクを必ず新しいタブで開くようにする
-html_with_js = f"""
-{html_content}
-<script>
-document.querySelectorAll('a').forEach(a => {{
-    a.setAttribute('target', '_blank');
-}});
-</script>
-"""
+# HTMLファイルの絶対パス
+file_path = os.path.abspath("hk_family_trip_bookmarks_mobile.html")
+file_url = f"file://{file_path}"
 
-# HTMLを埋め込み表示（スクロール可能に）
-components.html(
-    html_with_js,
-    height=1000,   # スクロール可能にする高さ
-    scrolling=True
-)
+st.markdown("""
+スマホで HTML を完全に表示・リンクも使いたい場合は、下のボタンを押してブラウザで開いてください。
+""")
+
+# ボタンでブラウザを開く
+if st.button("HTML をブラウザで開く"):
+    # ローカルPCからなら自動で開く
+    webbrowser.open(file_url)
+    st.success("ブラウザで開きました！")
+    st.markdown(f"[もし自動で開かない場合はここをタップ]({file_url})")
