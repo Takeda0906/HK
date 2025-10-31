@@ -11,7 +11,7 @@ html_content = """
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-#<title>香港 家族旅行 — ブックマーク</title>
+#<title>香港旅行</title>
 <meta name="description" content="家族旅行（3泊4日／ディズニー含む）向けのスマホ用ブックマークリスト。公式サイトへワンタップで移動できます。">
 <style>
 :root{--bg:#ffffff;--card:#f8fafc;--accent:#ff5a5f;--muted:#6b7280;--border:#e6eef6}
@@ -67,7 +67,7 @@ footer{padding:12px 0;text-align:center;color:var(--muted);font-size:13px}
 
 # レストランリストを追加
 restaurants = [
-    {"name":"Hutong（フートン）","desc":"ハーバービューの北方中華・テイスティングあり","url":"https://hutong.com.hk/"},
+    {"name":"Hutong（フートン）","desc":"ハーバービューの北方中華・<br>テイスティングあり","url":"https://hutong.com.hk/"},
     {"name":"Tim Ho Wan（添好運）","desc":"ミシュラン点心・カジュアルで名物多数","url":"https://www.timhowan.com/menu/"},
     {"name":"T’ang Court（唐閣）","desc":"The Langham内の高級広東料理","url":"https://www.langhamhotels.com/en/the-langham/hong-kong/dine/tang-court/"},
     {"name":"Mott 32","desc":"モダンチャイニーズ（人気店）","url":"https://mott32.com/"},
