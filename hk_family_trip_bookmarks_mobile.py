@@ -1,10 +1,12 @@
 import streamlit as st
+import threading
+from http.server import SimpleHTTPRequestHandler, HTTPServer
 import os
-import webbrowser
+import socket
 
 st.set_page_config(page_title="香港家族旅行ブックマーク", layout="wide")
 
-# Streamlit ヘッダー・フッターを非表示
+# Streamlit ヘッダー・フッター非表示
 st.markdown("""
 <style>
 header {display: none;}
@@ -13,19 +15,32 @@ footer {display: none;}
 </style>
 """, unsafe_allow_html=True)
 
-st.title("香港家族旅行ブックマーク")
+st.title("香港家族旅行ブックマーク (スマホ対応)")
 
-# HTMLファイルの絶対パス
-file_path = os.path.abspath("hk_family_trip_bookmarks_mobile.html")
-file_url = f"file://{file_path}"
+# HTML ファイルのディレクトリをサーバー用に指定
+html_dir = os.path.abspath(".")  # 同一フォルダ
 
-st.markdown("""
-スマホで HTML を完全に表示・リンクも使いたい場合は、下のボタンを押してブラウザで開いてください。
+# 簡易サーバー起動関数
+def start_server():
+    os.chdir(html_dir)
+    port = 8000
+    handler = SimpleHTTPRequestHandler
+    httpd = HTTPServer(("", port), handler)
+    httpd.serve_forever()
+
+# サーバーをバックグラウンドで起動（Thread）
+thread = threading.Thread(target=start_server, daemon=True)
+thread.start()
+
+# スマホからアクセスするための IP アドレス取得
+hostname = socket.gethostname()
+local_ip = socket.gethostbyname(hostname)
+server_url = f"http://{local_ip}:8000/hk_family_trip_bookmarks_mobile.html"
+
+st.markdown(f"""
+下のボタンを押すとスマホでもフルスクリーンで表示可能です。
+
+[スマホでHTMLを開く]({server_url})
 """)
 
-# ボタンでブラウザを開く
-if st.button("HTML をブラウザで開く"):
-    # ローカルPCからなら自動で開く
-    webbrowser.open(file_url)
-    st.success("ブラウザで開きました！")
-    st.markdown(f"[もし自動で開かない場合はここをタップ]({file_url})")
+st.info(f"スマホのブラウザから次のURLにアクセスしてください:\n{server_url}")
