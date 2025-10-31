@@ -5,7 +5,7 @@ from streamlit.components.v1 import html as st_html
 st.set_page_config(page_title="家族旅行ブックマーク", layout="wide")
 
 # Streamlitタイトル（標準サイズ・シンプル）
-st.subheader("家族旅行ブックマーク")
+#st.subheader("家族旅行ブックマーク")
 
 #st.write("以下のHTMLは自動で高さを調整して全体がスクロール可能です。")
 
