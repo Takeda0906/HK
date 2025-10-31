@@ -1,6 +1,5 @@
 import streamlit as st
 from streamlit.components.v1 import html as st_html
-import base64
 
 # ページ設定
 st.set_page_config(page_title="家族旅行ブックマーク", layout="wide")
@@ -9,10 +8,7 @@ st.set_page_config(page_title="家族旅行ブックマーク", layout="wide")
 with open("hk_family_trip_bookmarks_mobile.html", "r", encoding="utf-8") as f:
     html_code = f.read()
 
-# Base64エンコード（UTF-8対応で文字化け防止）
-html_base64 = base64.b64encode(html_code.encode("utf-8")).decode()
-
-# --- Blob URLでiframe読み込み（スマホリンク対応） ---
+# --- Blob URLでiframe読み込み（文字化け防止＆スマホリンク対応） ---
 auto_resize_wrapper = f"""
 <!DOCTYPE html>
 <html>
@@ -34,14 +30,10 @@ auto_resize_wrapper = f"""
 </style>
 </head>
 <body>
-  <script>
-    // Base64 → UTF-8 デコードして Blob に変換
-    const binary = atob("{html_base64}");
-    const bytes = new Uint8Array(binary.length);
-    for (let i = 0; i < binary.length; i++) {{
-      bytes[i] = binary.charCodeAt(i);
-    }}
-    const blob = new Blob([bytes], {{ type: "text/html;charset=utf-8" }});
+<script>
+    // HTML文字列をUTF-8でBlob化
+    const htmlString = `{html_code.replace('`', '\\`')}`;
+    const blob = new Blob([htmlString], {{ type: "text/html;charset=utf-8" }});
     const blobUrl = URL.createObjectURL(blob);
 
     // iframe生成
@@ -55,7 +47,25 @@ auto_resize_wrapper = f"""
 
     // 高さ自動調整
     function resizeIframe() {{
-      try {{
-        const doc = iframe.contentDocument || iframe.contentWindow.document;
-        const newHeight = doc.documentElement.scrollHeight || doc.body.scr
+        try {{
+            const doc = iframe.contentDocument || iframe.contentWindow.document;
+            const newHeight = doc.documentElement.scrollHeight || doc.body.scrollHeight;
+            iframe.style.height = newHeight + "px";
+        }} catch (e) {{
+            console.log("resize error:", e);
+        }}
+    }}
 
+    iframe.addEventListener("load", () => {{
+        resizeIframe();
+        setTimeout(resizeIframe, 1000);
+        setTimeout(resizeIframe, 3000);
+    }});
+    window.addEventListener("resize", resizeIframe);
+</script>
+</body>
+</html>
+"""
+
+# Streamlitに埋め込み
+st_html(auto_resize_wrapper, height=2000, scrolling=True)
