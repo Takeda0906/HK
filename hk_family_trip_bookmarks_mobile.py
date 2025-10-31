@@ -1,19 +1,17 @@
 import streamlit as st
 from streamlit.components.v1 import html as st_html
 
-# ページ設定（UIを表示する）
+# ページ設定
 st.set_page_config(page_title="家族旅行ブックマーク", layout="wide")
 
-# Streamlitタイトル（標準サイズ・シンプル）
-st.subheader("家族旅行ブックマーク")
-
-st.write("以下のHTMLは自動で高さを調整して全体がスクロール可能です。")
+# タイトル
+#st.subheader("家族旅行ブックマーク")
 
 # HTMLファイルを読み込み
 with open("hk_family_trip_bookmarks_mobile.html", "r", encoding="utf-8") as f:
     html_code = f.read()
 
-# --- 高さ自動調整 ---
+# --- 高さ自動調整 + スクロール対応 ---
 auto_resize_wrapper = f"""
 <!DOCTYPE html>
 <html>
@@ -24,34 +22,40 @@ auto_resize_wrapper = f"""
     margin: 0;
     padding: 0;
     height: 100%;
-    overflow: hidden;
+    overflow: auto;  /* ← スクロール許可に変更 */
   }}
   iframe {{
     border: none;
     width: 100%;
+    min-height: 100vh;
   }}
 </style>
 </head>
 <body>
-  <iframe id="embedded" srcdoc='{html_code.replace("'", "&apos;")}'></iframe>
+  <iframe id="embedded" srcdoc="{html_code.replace('"', '&quot;')}"></iframe>
 
   <script>
     const iframe = document.getElementById('embedded');
     function resizeIframe() {{
       try {{
-        const iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
-        const newHeight = iframeDocument.body.scrollHeight;
+        const doc = iframe.contentDocument || iframe.contentWindow.document;
+        const newHeight = doc.documentElement.scrollHeight || doc.body.scrollHeight;
         iframe.style.height = newHeight + 'px';
-      }} catch(e) {{
+      }} catch (e) {{
         console.log('resize error:', e);
       }}
     }}
-    iframe.addEventListener('load', resizeIframe);
+    iframe.addEventListener('load', () => {{
+      resizeIframe();
+      // 再描画後も更新（画像やCSS遅延対策）
+      setTimeout(resizeIframe, 1000);
+      setTimeout(resizeIframe, 3000);
+    }});
     window.addEventListener('resize', resizeIframe);
   </script>
 </body>
 </html>
 """
 
-# Streamlitに埋め込み（初期高さは仮で大きめ）
-st_html(auto_resize_wrapper, height=1000, scrolling=True)
+# Streamlitに埋め込み
+st_html(auto_resize_wrapper, height=2000, scrolling=True)
