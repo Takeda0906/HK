@@ -3,7 +3,7 @@ from streamlit.components.v1 import html as st_html
 
 st.set_page_config(page_title="香港 家族旅行ブックマーク", layout="wide")
 
-st.title("香港 家族旅行ブックマーク")
+#st.title("香港 家族旅行ブックマーク")
 
 html_content = """
 <!doctype html>
@@ -11,7 +11,7 @@ html_content = """
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-#<title>香港旅行</title>
+<title>香港旅行ブックマーク</title>
 <meta name="description" content="家族旅行（3泊4日／ディズニー含む）向けのスマホ用ブックマークリスト。公式サイトへワンタップで移動できます。">
 <style>
 :root{--bg:#ffffff;--card:#f8fafc;--accent:#ff5a5f;--muted:#6b7280;--border:#e6eef6}
