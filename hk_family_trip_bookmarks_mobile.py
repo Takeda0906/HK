@@ -1,25 +1,13 @@
 import streamlit as st
+import streamlit.components.v1 as components
 
 # HTMLファイルの読み込み
 with open("hk_family_trip_bookmarks_mobile.html", "r", encoding="utf-8") as f:
     html_content = f.read()
 
-# HTMLを表示
-st.markdown(
+# HTMLを埋め込み表示
+components.html(
     html_content,
-    unsafe_allow_html=True  # HTMLレンダリングを許可
-)
-
-# ページ全体をスマホ表示に最適化
-st.markdown(
-    """
-    <style>
-    /* 全画面幅にする */
-    .reportview-container .main {
-        padding: 0;
-        margin: 0;
-    }
-    </style>
-    """,
-    unsafe_allow_html=True
+    height=800,          # スクロール可能にする高さ
+    scrolling=True       # スクロールを有効にする
 )
