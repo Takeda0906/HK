@@ -4,14 +4,11 @@ from streamlit.components.v1 import html as st_html
 # ページ設定
 st.set_page_config(page_title="家族旅行ブックマーク", layout="wide")
 
-# タイトル
-#st.subheader("家族旅行ブックマーク")
-
 # HTMLファイルを読み込み
 with open("hk_family_trip_bookmarks_mobile.html", "r", encoding="utf-8") as f:
     html_code = f.read()
 
-# --- 高さ自動調整 + スクロール対応 ---
+# --- 高さ自動調整 + スクロール + リンク遷移対応 ---
 auto_resize_wrapper = f"""
 <!DOCTYPE html>
 <html>
@@ -22,7 +19,7 @@ auto_resize_wrapper = f"""
     margin: 0;
     padding: 0;
     height: 100%;
-    overflow: auto;  /* ← スクロール許可に変更 */
+    overflow: auto;
   }}
   iframe {{
     border: none;
@@ -32,7 +29,11 @@ auto_resize_wrapper = f"""
 </style>
 </head>
 <body>
-  <iframe id="embedded" srcdoc="{html_code.replace('"', '&quot;')}"></iframe>
+  <iframe 
+    id="embedded"
+    sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
+    srcdoc="{html_code.replace('"', '&quot;')}">
+  </iframe>
 
   <script>
     const iframe = document.getElementById('embedded');
@@ -47,7 +48,6 @@ auto_resize_wrapper = f"""
     }}
     iframe.addEventListener('load', () => {{
       resizeIframe();
-      // 再描画後も更新（画像やCSS遅延対策）
       setTimeout(resizeIframe, 1000);
       setTimeout(resizeIframe, 3000);
     }});
