@@ -1,8 +1,8 @@
 import streamlit as st
 
 # Streamlit のヘッダやフッタを非表示（全画面風に）
-#hide_streamlit_style = """
-#<style>
+hide_streamlit_style = """
+<style>
 #/* Streamlit のヘッダ＆フッタ非表示 */
 #header {visibility: hidden;}
 #footer {visibility: hidden;}
