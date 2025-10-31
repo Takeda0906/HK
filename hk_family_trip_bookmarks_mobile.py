@@ -3,7 +3,7 @@ from streamlit.components.v1 import html as st_html
 import os
 
 st.set_page_config(page_title="香港 家族旅行ブックマーク", layout="wide")
-st.title("香港 家族旅行ブックマーク")
+st.title("")
 
 html_file = "hk_family_trip_bookmarks_mobile.html"
 
