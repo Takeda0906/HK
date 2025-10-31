@@ -1,7 +1,7 @@
 import streamlit as st
 from pathlib import Path
 
-#st.set_page_config(page_title="香港 家族旅行", layout="wide")
+st.set_page_config(page_title="香港 家族旅行", layout="wide")
 
 # ヘッダ・フッタ非表示
 st.markdown(
