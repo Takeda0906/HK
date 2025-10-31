@@ -1,11 +1,11 @@
 import streamlit as st
 
 # Streamlit のヘッダやフッタを非表示（全画面風に）
-hide_streamlit_style = """
-<style>
-/* Streamlit のヘッダ＆フッタ非表示 */
-header {visibility: hidden;}
-footer {visibility: hidden;}
+#hide_streamlit_style = """
+#<style>
+#/* Streamlit のヘッダ＆フッタ非表示 */
+#header {visibility: hidden;}
+#footer {visibility: hidden;}
 
 /* サイドバーの余白を取り除く */
 .css-1d391kg {padding-top: 0rem !important;}
