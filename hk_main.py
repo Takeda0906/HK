@@ -11,7 +11,7 @@ html_content = """
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>香港 家族旅行 — ブックマーク</title>
+#<title>香港 家族旅行 — ブックマーク</title>
 <meta name="description" content="家族旅行（3泊4日／ディズニー含む）向けのスマホ用ブックマークリスト。公式サイトへワンタップで移動できます。">
 <style>
 :root{--bg:#ffffff;--card:#f8fafc;--accent:#ff5a5f;--muted:#6b7280;--border:#e6eef6}
