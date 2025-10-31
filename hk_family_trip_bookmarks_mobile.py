@@ -7,11 +7,11 @@ st.set_page_config(
     layout="wide"
 )
 
-# HTMLファイル読み込み
+# HTMLファイル読み込み（UTF-8保存前提）
 with open("hk_family_trip_bookmarks_mobile.html", "r", encoding="utf-8") as f:
     html_code = f.read()
 
-# Streamlitに埋め込み（スマホ対応・全画面・スクロール対応）
+# HTMLを直接埋め込む（スマホリンク対応）
 responsive_html = f"""
 <!DOCTYPE html>
 <html>
@@ -22,8 +22,8 @@ responsive_html = f"""
   html, body {{
     margin: 0;
     padding: 0;
-    height: 100%;
-    overflow: hidden; /* スクロールはStreamlit側に任せる */
+    width: 100%;
+    overflow: auto;  /* Streamlit側でスクロール */
   }}
   #content-wrapper {{
     width: 100%;
@@ -38,13 +38,12 @@ responsive_html = f"""
 </div>
 
 <script>
+// 高さ自動調整（画像ロードや画面リサイズに対応）
 function adjustHeight() {{
     const wrapper = document.getElementById('content-wrapper');
-    const newHeight = wrapper.scrollHeight;
-    wrapper.style.minHeight = newHeight + 'px';
+    wrapper.style.minHeight = wrapper.scrollHeight + 'px';
 }}
 
-// 読み込み時・画像読み込み後・リサイズ時に高さ調整
 window.addEventListener('load', adjustHeight);
 window.addEventListener('resize', adjustHeight);
 const images = document.images;
@@ -57,5 +56,4 @@ for (let img of images) {{
 """
 
 # Streamlitに埋め込み
-# heightは大きめにしてスクロール可能に
 st_html(responsive_html, height=2000, scrolling=True)
