@@ -1,5 +1,5 @@
 import streamlit as st
-from streamlit.components.v1 import html as st_html
+from pathlib import Path
 
 # ページ設定
 st.set_page_config(
@@ -7,53 +7,39 @@ st.set_page_config(
     layout="wide"
 )
 
-# HTMLファイル読み込み（UTF-8保存前提）
-with open("hk_family_trip_bookmarks_mobile.html", "r", encoding="utf-8") as f:
-    html_code = f.read()
+# HTMLファイルのパス
+html_file = Path("hk_family_trip_bookmarks_mobile.html")
 
-# HTMLを直接埋め込む（スマホリンク対応）
-responsive_html = f"""
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<style>
-  html, body {{
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    overflow: auto;  /* Streamlit側でスクロール */
-  }}
-  #content-wrapper {{
-    width: 100%;
-    min-height: 100vh;
-    box-sizing: border-box;
-  }}
-</style>
-</head>
-<body>
-<div id="content-wrapper">
-{html_code}
-</div>
+# Streamlit の「静的ファイル」用ディレクトリにコピー（例：現在のディレクトリ）
+# ここではそのままパスを iframe src に渡します
+iframe_src = html_file.as_posix()  # Windowsなら as_posix() でスラッシュ統一
+
+# iframe で HTML を読み込み、高さ自動調整
+st.markdown(f"""
+<iframe 
+    src="{iframe_src}" 
+    style="width:100%; height:1000px; border:none;" 
+    id="bookmark-frame"
+></iframe>
 
 <script>
-// 高さ自動調整（画像ロードや画面リサイズに対応）
-function adjustHeight() {{
-    const wrapper = document.getElementById('content-wrapper');
-    wrapper.style.minHeight = wrapper.scrollHeight + 'px';
+// 高さ自動調整（画像ロード・リサイズ対応）
+const iframe = document.getElementById('bookmark-frame');
+function resizeIframe() {{
+    try {{
+        iframe.style.height = iframe.contentWindow.document.body.scrollHeight + 'px';
+    }} catch(e) {{
+        console.log('iframe resize error:', e);
+    }}
 }}
 
-window.addEventListener('load', adjustHeight);
-window.addEventListener('resize', adjustHeight);
-const images = document.images;
-for (let img of images) {{
-    img.addEventListener('load', adjustHeight);
-}}
+iframe.addEventListener('load', () => {{
+    resizeIframe();
+    // 画像やCSS読み込み遅延対策
+    setTimeout(resizeIframe, 1000);
+    setTimeout(resizeIframe, 3000);
+}});
+window.addEventListener('resize', resizeIframe);
 </script>
-</body>
-</html>
-"""
+""", unsafe_allow_html=True)
 
-# Streamlitに埋め込み
-st_html(responsive_html, height=2000, scrolling=True)
